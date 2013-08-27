@@ -1,0 +1,2 @@
+require 'feed_processor_utils/feed_post_builder'
+require 'feed_processor_utils/html_parser'

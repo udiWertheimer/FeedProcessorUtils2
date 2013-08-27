@@ -1,0 +1,51 @@
+:real_title:
+  :selectors:
+  - title
+  :fallback_text: true
+:page_title:
+  :selectors:
+  - meta[name='og:title']
+  - meta[property='og:title']
+  - title
+  :attribute: content
+  :fallback_text: true
+:meta_desc:
+  :selectors:
+  - meta[name='og:description']
+  - meta[property='og:description']
+  - meta[name='description']
+  - meta[name='Description']
+  :attribute: content
+:video_url:
+  :collection: true
+  :selectors:
+  - embed
+  - iframe
+  :attribute: src
+:video_site:
+  :selectors:
+  - .video_holder img.video_thumbnail
+  :attribute: video-site
+:video_id:
+  :selectors:
+  - .video_holder img.video_thumbnail
+  :attribute: data-video
+:image:
+  :selectors:
+  - img.entry-image
+  :attribute: src
+:lazy_image_tags:
+  :collection: true
+  :selectors:
+  - img
+  :attribute: data-src
+:image_tags:
+  :collection: true
+  :selectors:
+  - img
+  :attribute: src
+:og_image:
+  :attribute: content
+  :selectors:
+  - meta[property='og:image']
+  

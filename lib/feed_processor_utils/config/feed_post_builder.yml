@@ -1,0 +1,44 @@
+:attributes:
+  :title:
+    :keys:
+    - :atom_title
+    - :title
+  :description:
+    :keys:
+    - :meta_desc
+  :pics:
+    :keys:
+    - :image
+    - :og_image
+  :time:
+    :keys:
+    - :atom_updated
+    - :atom_published
+    - :date
+    :helper: :time_with_default
+  :url:
+    :keys:
+    - atom_link
+    - link
+  :text:
+    :keys:
+    - :atom_text
+    - :content
+    :helper: :clean_text
+:replacements:
+- - !ruby/regexp /\<a.+href.+data:.+base64,.+\<\/a\>/
+  - ''
+- - !ruby/regexp /\<script.+\<\/script\>/
+  - ''
+- - !ruby/regexp /<img\/?[^>]+?>/
+  - ''
+- - !ruby/regexp /(<\s*p\s*\w*>\s*&nbsp;\s*<\s*\/p\s*>)+/
+  - <br />
+- - !ruby/regexp /(\s*\n\s*)+/
+  - <br />
+- - !ruby/regexp /(\<\/?\s*br\s*\/?\>)+/
+  - <br />
+- - !ruby/regexp /<\s*\/\s*p\s*><br \/>/
+  - </p>
+- - !ruby/regexp /<a /
+  - ! '<a rel="nofollow" '
