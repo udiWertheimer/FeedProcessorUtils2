@@ -13,11 +13,13 @@ module FeedProcessorUtils
 
     def parse_data(input)
       input_doc = Nokogiri::HTML(input)
-      Hash[
+      parsed = Hash[
         fields.map do |field_name, parsing_data|
           [field_name, extract_field(input_doc, parsing_data)]
         end
       ]
+      parse_lazy_images!(parsed[:lazy_image_tags]) if parsed[:lazy_image_tags]
+      parsed
     end
 
     def parse_url(url)
@@ -55,6 +57,16 @@ module FeedProcessorUtils
 
     def fields
       @config
+    end
+
+    def parse_lazy_images!(lazy_images)
+      # this gets rid of #{whatever} in sky sports articles
+      regex = /#\{(.+)\}/
+      lazy_images.map! do |lazy_image|
+        lazy_image.sub! regex do |full_match|
+          $1.to_s # this is the 'whatever' inside #{whatever}
+        end
+      end.compact!
     end
 
   end

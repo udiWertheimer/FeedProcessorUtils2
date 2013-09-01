@@ -87,7 +87,7 @@ module FeedProcessorUtils
       end.last
       if largest_img
         if is_news
-          image_urls << largest_img[:url]
+          image_urls << largest_img[:url] if largest_img[:dim] && have_minimum_size?(largest_img[:dim])
         else
           image_urls.unshift(largest_img[:url]) if largest_img[:dim] && dimensions_ok?(largest_img[:dim])
         end
