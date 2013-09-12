@@ -2,6 +2,10 @@
   :selectors:
   - title
   :fallback_text: true
+:h_title:
+  :selectors:
+    - h1
+  :fallback_text: true
 :page_title:
   :selectors:
   - meta[name='og:title']

@@ -61,10 +61,20 @@ module FeedProcessorUtils
       dimensions.first.to_i >= 300 && dimensions.last.to_i >= 150
     end
     
-    def self.get_images(item_data, is_news)
+    def self.get_images(item_data, is_news, customized = "default")
+      customized ||= "default"
       image_urls = []
       domain = URI.parse(item_data[:url] || item_data[:id])
-      [:og_image, :image].each do |key|
+      specific_images = if customized == "default"
+        [:og_image, :image]
+      elsif customized == "og_image"
+        [:og_image]
+      elsif customized == "html_images"
+        [:image]
+      else
+        []
+      end
+      specific_images.each do |key|
         url = item_data[key]
         if url
           url = ensure_absolute(url.to_s, domain.to_s)
@@ -73,23 +83,25 @@ module FeedProcessorUtils
           end
         end
       end
-      nominated_images = if item_data[:lazy_image_tags].present?
-        item_data[:lazy_image_tags]
-      else
-        item_data[:images_in_text]
-      end
-      with_size = nominated_images.map do |url|
-        {url: url, dim: get_image_dimensions(url)}
-      end
-      largest_img = with_size.sort_by do |img|
-        dim = img[:dim]
-        dim ? dim[0] * dim[1] : 0
-      end.last
-      if largest_img
-        if is_news
-          image_urls << largest_img[:url] if largest_img[:dim] && have_minimum_size?(largest_img[:dim])
+      if ["default", "lazy_images", "html_images"].include?(customized)
+        nominated_images = if ["default", "lazy_images"].include?(customized) && item_data[:lazy_image_tags].present?
+          item_data[:lazy_image_tags]
         else
-          image_urls.unshift(largest_img[:url]) if largest_img[:dim] && dimensions_ok?(largest_img[:dim])
+          item_data[:images_in_text]
+        end
+        with_size = nominated_images.map do |url|
+          {url: url, dim: get_image_dimensions(url)}
+        end
+        largest_img = with_size.sort_by do |img|
+          dim = img[:dim]
+          dim ? dim[0] * dim[1] : 0
+        end.last
+        if largest_img
+          if is_news
+            image_urls << largest_img[:url] if largest_img[:dim] && have_minimum_size?(largest_img[:dim])
+          else
+            image_urls.unshift(largest_img[:url]) if largest_img[:dim] && dimensions_ok?(largest_img[:dim])
+          end
         end
       end
       image_urls
