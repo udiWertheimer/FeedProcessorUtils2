@@ -6,9 +6,9 @@ module FeedProcessorUtils
 
     @@config_file = File.join(File.dirname(__FILE__), 'config/feed_post_builder.yml')
 
-    def self.sanitize(text)
+    def self.sanitize(text, options = {})
       return nil unless text 
-      replacements.each do |pattern, replacement|
+      replacements(options).each do |pattern, replacement|
         text.gsub!(pattern, replacement)
       end
       text
@@ -114,12 +114,11 @@ module FeedProcessorUtils
       end
     end
 
-
     def self.config
       @@config ||= YAML.load(File.read(@@config_file))
     end
 
-    def self.replacements
+    def self.replacements(options = {})
       config[:replacements]
     end
 
